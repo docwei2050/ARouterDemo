@@ -1,0 +1,5 @@
+rootProject.name='ARouterDemo'
+include ':app'
+include ':compiler'
+include ':arouter_api'
+include ':annotation'
