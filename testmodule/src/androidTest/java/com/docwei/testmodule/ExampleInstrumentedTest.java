@@ -1,4 +1,4 @@
-package com.docwei.arouter_api;
+package com.docwei.testmodule;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.docwei.arouter_api.test", appContext.getPackageName());
+        assertEquals("com.docwei.testmodule.test", appContext.getPackageName());
     }
 }

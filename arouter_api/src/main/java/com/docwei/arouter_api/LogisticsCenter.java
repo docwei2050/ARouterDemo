@@ -3,6 +3,7 @@ package com.docwei.arouter_api;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.docwei.annotation.RouteMeta;
@@ -26,7 +27,58 @@ import static com.docwei.compiler.Consts.NAME_OF_ROOT;
 // dex中的指定的类
 //当然也可以使用autoRegister在编译器去做
 public class LogisticsCenter {
+    static boolean sAutoRegister;
+
+    public static void loadRouteMap() {
+        sAutoRegister = false;
+        //这个方法将被ASM修改，添加对应的代码 ,尽量不要给ASM要修改的方法添加麻烦
+        //register("com.docwei.arouter.routes.ARouter$$Root$$app);
+        //register("com.docwei.arouter.routes.ARouter$$Root$$app");
+
+    }
+
+    public static void register(String name) {
+        Log.e("myArouter", "register方法的方法--》"+name );
+        if (!TextUtils.isEmpty(name)) {
+            try {
+                Object obj = Class.forName(name).getConstructor().newInstance();
+                if (obj instanceof IRouterRoot) {
+                    ((IRouterRoot) obj).loadInto(WareHouse.sGroups);
+                }
+                Log.e("myArouter", "register方法--》"+name );
+                sAutoRegister = true;
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                Log.e("myArouter", "registerIllegalAccessException--》"+e.getMessage() );
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+                Log.e("myArouter", "registerInstantiationException--》"+e.getMessage() );
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+                Log.e("myArouter", "registerInvocationTargetException --》"+e.getMessage() );
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+                Log.e("myArouter", "registerNoSuchMethodException--》"+e.getMessage() );
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                Log.e("myArouter", "registerClassNotFoundException--》"+e.getMessage() );
+            }
+
+
+        }
+    }
+
+
     public static void init(Context context, ThreadPoolExecutor executor) {
+
+        //方式一；耗时的从base.apk（dexFile）去找IRouteRoot的子类全路径 ,这里就耗时1s左右
+        //优化的方式，使用auto-register
+        //方式二：loadRouteMap()
+        loadRouteMap();
+       if(sAutoRegister){
+           Log.e("myArouter", "init: 走auto-register" );
+           return;
+       }
         final Set<String> fileNames = new HashSet<>();
         ApplicationInfo applicationInfo = context.getApplicationInfo();
         //获取app的apk的路径
@@ -35,32 +87,30 @@ public class LogisticsCenter {
         //耗时大概1s左右，这个是Arouter耗时的关键
         DexFile dexFile = null;
         try {
-            Log.e("myRouter", "element:开始获取 ");
             dexFile = new DexFile(path);
             Enumeration<String> entries = dexFile.entries();
             while (entries.hasMoreElements()) {
                 String element = entries.nextElement();
-                Log.e("myRouter", "element: " + element);
                 //去找含有这个com.docwei.arouter.routes路径的文件名
                 if (element.contains(Consts.PACKAGE_OF_GENERATE_FILE)) {
-
                     fileNames.add(element);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
         for (String fileName : fileNames) {
 
             if (fileName.startsWith(Consts.PACKAGE_OF_GENERATE_FILE + "." + NAME_OF_ROOT)) {
                 //反射去创建这个类对象，然后保存到仓库
                 try {
-                    Log.e("myRouter", "init: " + fileName);
-
+                    Log.e("myRouter", "反射创建init: " + fileName);
                     ((IRouterRoot) (Class.forName(fileName).getConstructor().newInstance())).loadInto(WareHouse.sGroups);
                    /* IRouterRoot iRouterRoot = (IRouterRoot)(Class.forName(fileName).getConstructor().newInstance());
                     iRouterRoot.loadInto(WareHouse.sGroups);*/
-                    Log.e("myRouter", "init:WareHouse.sGroups.size() " +WareHouse.sGroups.size());
+                    Log.e("myRouter", "反射创建init:WareHouse.sGroups.size() " + WareHouse.sGroups.size());
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InstantiationException e) {
@@ -74,11 +124,13 @@ public class LogisticsCenter {
                 }
             }
         }
+
+
     }
 
     public static void completePostCard(PostCard postCard) {
         RouteMeta routeMeta = WareHouse.sRoutes.get(postCard.getPath());
-        Log.e("myRouter", "completePostCard: "+WareHouse.sGroups.size()+"---"+postCard.getGroup() );
+        Log.e("myRouter", "completePostCard: " + WareHouse.sGroups.size() + "---" + postCard.getGroup());
         if (routeMeta == null) {
             Class<? extends IRouterGroup> iRouterGroup = WareHouse.sGroups.get(postCard.getGroup());
             if (iRouterGroup == null) {

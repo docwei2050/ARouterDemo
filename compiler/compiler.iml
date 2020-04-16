@@ -30,6 +30,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="annotation" exported="" />
-    <orderEntry type="library" exported="" name="Gradle: javapoet-1.8.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: javapoet-1.12.1" level="project" />
   </component>
 </module>

@@ -20,7 +20,13 @@ public class MainActivity extends AppCompatActivity {
     public void clickMe2Second(View view) {
         ARouter.getInstance().build("/test/second").navgation();
     }
+
     public void clickMe2Third(View view) {
+
         ARouter.getInstance().build("/test/third").navgation(this);
+    }
+
+    public void clickMe2TestModule(View view) {
+        ARouter.getInstance().build("/testmodule/test").navgation(this);
     }
 }

@@ -26,18 +26,34 @@
         app:layout_constraintVertical_bias="0.187" />
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="match_parent"
-        android:gravity="center"
         android:layout_height="100dp"
+        android:background="#B8EABA"
+        android:gravity="center"
         android:onClick="clickMe2Third"
         android:text="clickMe2Third"
         android:textColor="@android:color/white"
         android:textSize="30sp"
-        android:background="#B8EABA"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.386"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv1"
-        app:layout_constraintVertical_bias="0.127" />
+        app:layout_constraintVertical_bias="0.159" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:textColor="@android:color/white"
+        android:background="#F2C178"
+        android:onClick="clickMe2TestModule"
+        android:text="clickMe2TestModule"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

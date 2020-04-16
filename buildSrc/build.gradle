@@ -1,0 +1,14 @@
+apply plugin: 'groovy'
+
+dependencies {
+    implementation localGroovy()
+    implementation gradleApi()
+    implementation 'com.android.tools.build:gradle:3.6.2'
+}
+repositories {
+    google()
+    jcenter()
+
+}
+sourceCompatibility = "8"
+targetCompatibility = "8"

@@ -1,4 +1,4 @@
-package com.docwei.arouter_api;
+package com.docwei.testmodule;
 
 import org.junit.Test;
 
