@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickMe2Third(View view) {
-
         ARouter.getInstance().build("/test/third").navgation(this);
     }
 
