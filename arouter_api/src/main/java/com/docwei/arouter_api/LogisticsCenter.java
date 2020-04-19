@@ -8,7 +8,9 @@ import android.util.Log;
 
 import com.docwei.annotation.BizType;
 import com.docwei.annotation.RouteMeta;
+import com.docwei.arouter_api.autowird.IAutoWird;
 import com.docwei.arouter_api.data.IProvider;
+import com.docwei.arouter_api.template.IAutoWirdGroup;
 import com.docwei.arouter_api.template.IInterceptorGroup;
 import com.docwei.arouter_api.template.IProviderGroup;
 import com.docwei.arouter_api.template.IRouterGroup;
@@ -24,6 +26,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import dalvik.system.DexFile;
 
+import static com.docwei.compiler.Consts.NAME_OF_AUTOWIRD;
 import static com.docwei.compiler.Consts.NAME_OF_INTERCEPTOR;
 import static com.docwei.compiler.Consts.NAME_OF_PROVIDER;
 import static com.docwei.compiler.Consts.NAME_OF_ROOT;
@@ -55,6 +58,9 @@ public class LogisticsCenter {
                 }
                 if (obj instanceof IInterceptorGroup) {
                     ((IInterceptorGroup) (Class.forName(name).getConstructor().newInstance())).loadInto(WareHouse.sInterceptors);
+                }
+                if (obj instanceof IAutoWirdGroup) {
+                    ((IAutoWirdGroup) (Class.forName(name).getConstructor().newInstance())).loadInto(WareHouse.sAutoWird);
                 }
                 sAutoRegister = true;
             } catch (IllegalAccessException e) {
@@ -118,6 +124,9 @@ public class LogisticsCenter {
                 }
                 if (fileName.startsWith(Consts.PACKAGE_OF_GENERATE_FILE + "." + NAME_OF_INTERCEPTOR)) {
                     ((IInterceptorGroup) (Class.forName(fileName).getConstructor().newInstance())).loadInto(WareHouse.sInterceptors);
+                }
+                if (fileName.startsWith(Consts.PACKAGE_OF_GENERATE_FILE + "." + NAME_OF_AUTOWIRD)) {
+                    ((IAutoWirdGroup)(Class.forName(fileName).getConstructor().newInstance())).loadInto(WareHouse.sAutoWird);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();

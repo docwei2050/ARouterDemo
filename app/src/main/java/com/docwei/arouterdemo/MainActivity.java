@@ -3,13 +3,17 @@ package com.docwei.arouterdemo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.docwei.annotation.AutoWird;
 import com.docwei.arouter_api.ARouter;
 import com.docwei.arouter_api.PostCard;
 import com.docwei.arouter_api.interceptors.NavgationCallback;
+import com.docwei.arouterdemo.bean.MyTestParcelBean;
+import com.docwei.arouterdemo.bean.MyTestSerializableBean;
 import com.docwei.arouterdemo.createobject.HelloServiceImpl;
 import com.docwei.arouterdemo.createobject.IHelloService;
 
@@ -52,5 +56,28 @@ public class MainActivity extends AppCompatActivity {
     public void createObjectByType(View view) {
         IHelloService helloService= (IHelloService) ARouter.getInstance().navigation(IHelloService.class);
         helloService.sayHello();
+    }
+
+
+/*    MyTestSerializableBean mSerializableBean;
+    @AutoWird
+    MyTestParcelBean mMyTestParcelBean;
+    @AutoWird
+    public int score;
+    @AutoWird
+    public double goal;*/
+
+    public void testAutoWird(View view) {
+        Intent intent=new Intent(MainActivity.this,SecondActivity.class);
+        intent.putExtra("name","docwei");
+        intent.putExtra("price",1000);
+        intent.putExtra("score",10);
+        intent.putExtra("goal",11.20);
+        MyTestParcelBean bean=new MyTestParcelBean("ysl");
+        intent.putExtra("mMyTestParcelBean",bean);
+        MyTestSerializableBean serializableBean=new MyTestSerializableBean("LOVE is everything");
+        intent.putExtra("mSerializableBean",serializableBean);
+
+        startActivity(intent);
     }
 }

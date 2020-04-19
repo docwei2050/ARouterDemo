@@ -18,6 +18,7 @@ class ScanUtils {
     static String IROUTE_ROOT = "IRouterRoot";
     static String IPROVIDER_ROOT = "IProviderGroup";
     static String IINTERCEPTOR_ROOT = "IInterceptorGroup";
+    static String IAUTOWIRD_ROOT = "IAutoWirdGroup";
     static String IROUTE_ROOT_PACKAGE = "com/docwei/arouter_api/template/";
 
     static String LOGISTICS_CENTER_PACKAGE="com/docwei/arouter_api/LogisticsCenter"
@@ -95,6 +96,9 @@ class ScanUtils {
                 }
                 if ((IROUTE_ROOT_PACKAGE+IINTERCEPTOR_ROOT).equals(interfaceName)&&!AutoRegisterTransform.childrenForIInterceptorGroup.contains(name)) {
                     AutoRegisterTransform.childrenForIInterceptorGroup.add(name);
+                }
+                if ((IROUTE_ROOT_PACKAGE+IAUTOWIRD_ROOT).equals(interfaceName)&&!AutoRegisterTransform.childrenForIAutoWirdGroup.contains(name)) {
+                    AutoRegisterTransform.childrenForIAutoWirdGroup.add(name);
                 }
             }
         }

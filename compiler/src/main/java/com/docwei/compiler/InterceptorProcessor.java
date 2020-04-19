@@ -67,7 +67,7 @@ public class InterceptorProcessor extends AbstractProcessor {
             mModuleName = mOptions.get("AROUTER_MODULE_NAME");
             Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Interceptor.class);
             for (Element element : elements) {
-                if (element instanceof TypeElement) {
+                if (!(element instanceof TypeElement)) {
                     mLogger.e("Route只能注解到类上");
                     return false;
                 }

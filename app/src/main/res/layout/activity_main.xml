@@ -51,7 +51,7 @@
         style="@style/text_style"
         android:id="@+id/textView"
         android:background="#EF6493"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="100dp"
         android:onClick="createObjectByPath"
         android:text="createObjectByPath(获取实例)"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -73,4 +73,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/button"
+        style="@style/text_style"
+        android:background="#5BABEA"
+        android:onClick="testAutoWird"
+        android:text="testAutoWird(页面跳转参数自动赋值)"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintVertical_bias="0.341" />
 </androidx.constraintlayout.widget.ConstraintLayout>

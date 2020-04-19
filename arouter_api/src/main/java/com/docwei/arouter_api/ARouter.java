@@ -2,7 +2,10 @@ package com.docwei.arouter_api;
 
 import android.content.Context;
 
+import com.docwei.arouter_api.autowird.IAutoWird;
 import com.docwei.arouter_api.interceptors.InterceptorHandlerImpl;
+
+import java.lang.reflect.InvocationTargetException;
 
 //采用外观模式
 public class ARouter {
@@ -33,5 +36,9 @@ public class ARouter {
 
     public Object navigation(Class service){
         return  _ARouter.getInstance().navgation(service);
+    }
+
+    public void inject(Object target) {
+        _ARouter.getInstance().inject(target);
     }
 }

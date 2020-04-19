@@ -10,4 +10,6 @@ public class Consts {
     public static final String NAME_OF_INTERCEPTOR = PROJECT + SEPARATOR + "interceptor";
     public static final String NAME_OF_GROUP = PROJECT + SEPARATOR + "Group";
     public static final String NAME_OF_PROVIDER = PROJECT + SEPARATOR + "Provider";
+    public static final String NAME_OF_AUTOWIRD = PROJECT + SEPARATOR + "AutoWird";
+    public static final String AUTOWIRD =  "AutoWird";
 }

@@ -11,6 +11,7 @@ class AutoRegisterTransform extends Transform {
     static ArrayList<String> childrenForIRouterRoot =new ArrayList<>();
     static ArrayList<String> childrenForIProviderGroup =new ArrayList<>();
     static ArrayList<String> childrenForIInterceptorGroup =new ArrayList<>();
+    static ArrayList<String> childrenForIAutoWirdGroup =new ArrayList<>();
    public  static File logisticsCenterFile;
 
     @Override

@@ -2,6 +2,7 @@ package com.docwei.arouter_api;
 
 
 import com.docwei.annotation.RouteMeta;
+import com.docwei.arouter_api.autowird.IAutoWird;
 import com.docwei.arouter_api.data.IProvider;
 import com.docwei.arouter_api.interceptors.IInterceptor;
 import com.docwei.arouter_api.template.IRouterGroup;
@@ -34,4 +35,7 @@ public class WareHouse {
     public static ArrayList<IInterceptor> sInterceptorObjects = new ArrayList<>();
 
 
+
+    //跟源码不一样的 String是Activity类的全路径
+    public static Map<String, Class<? extends IAutoWird>> sAutoWird=new HashMap<>();
 }

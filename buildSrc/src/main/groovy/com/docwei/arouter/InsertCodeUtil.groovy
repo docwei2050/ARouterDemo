@@ -13,7 +13,6 @@ class InsertCodeUtil {
 
     static void insert(File rawFile, ArrayList<String> list) {
         //未被修改的文件
-        Logger.e("rawFile后缀---》" + rawFile.getParent() + rawFile.getName())
         //新建一个空的jar.opt文件
         File optFile = new File(rawFile.getParent(), rawFile.getName() + ".opt")
         if (optFile.exists()) {
@@ -115,7 +114,6 @@ class InsertCodeUtil {
                     mv.visitLdcInsn(name);
                     mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/docwei/arouter_api/LogisticsCenter",
                             "register", "(Ljava/lang/String;)V", false);
-                    Logger.e("插入代码--" + name)
 
                 }
                 AutoRegisterTransform.childrenForIInterceptorGroup.each {
@@ -123,7 +121,12 @@ class InsertCodeUtil {
                     mv.visitLdcInsn(name);
                     mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/docwei/arouter_api/LogisticsCenter",
                             "register", "(Ljava/lang/String;)V", false);
-                    Logger.e("插入代码--" + name)
+                }
+                AutoRegisterTransform.childrenForIAutoWirdGroup.each {
+                    String name = it.replaceAll("/", ".")
+                    mv.visitLdcInsn(name);
+                    mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/docwei/arouter_api/LogisticsCenter",
+                            "register", "(Ljava/lang/String;)V", false);
                 }
             }
             super.visitInsn(opcode)

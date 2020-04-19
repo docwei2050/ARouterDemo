@@ -9,11 +9,13 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.docwei.annotation.RouteMeta;
+import com.docwei.arouter_api.autowird.IAutoWird;
 import com.docwei.arouter_api.interceptors.IInterceptorCallback;
 import com.docwei.arouter_api.interceptors.InterceptorHandlerImpl;
 import com.docwei.arouter_api.interceptors.NavgationCallback;
 import com.docwei.arouter_api.thread.DefaultPoolExecutor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ThreadPoolExecutor;
 
 
@@ -136,6 +138,23 @@ public class _ARouter {
     public void runOnUIThread(Runnable runnable){
         if(Looper.getMainLooper()!=Looper.myLooper()){
             mHandler.post(runnable);
+        }
+    }
+    public void inject(Object target) {
+        String name=target.getClass().getCanonicalName();
+        if(WareHouse.sAutoWird.containsKey(name)){
+            try {
+                IAutoWird autoWird=WareHouse.sAutoWird.get(name).getConstructor().newInstance();
+                autoWird.inject(target);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
