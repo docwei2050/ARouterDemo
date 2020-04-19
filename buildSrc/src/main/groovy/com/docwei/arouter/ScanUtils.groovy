@@ -16,12 +16,15 @@ import java.util.jar.JarFile;
 
 class ScanUtils {
     static String IROUTE_ROOT = "IRouterRoot";
+    static String IPROVIDER_ROOT = "IProviderGroup";
+    static String IINTERCEPTOR_ROOT = "IInterceptorGroup";
     static String IROUTE_ROOT_PACKAGE = "com/docwei/arouter_api/template/";
+
     static String LOGISTICS_CENTER_PACKAGE="com/docwei/arouter_api/LogisticsCenter"
     static String LOGISTICS_CENTER =  LOGISTICS_CENTER_PACKAGE+".class";
     //这个包名是固定的  com.docwei.arouter.routes
-    static String IROUTE_ROOT_CHILD_PACKAGE = "com/docwei/arouter/routes/ARouter\$\$Root\$\$";
-    static String IROUTE_ROOT_CHILD_NAME_PREFIX = "ARouter\$\$Root\$\$";
+    static String IROUTE_ROOT_CHILD_PACKAGE = "com/docwei/arouter/routes/ARouter\$\$";
+    static String IROUTE_ROOT_CHILD_NAME_PREFIX = "ARouter\$\$";
     //jarInput.getFile()就是 xxx.jar /Users/docwei/GitHub/ARouterDemo/annotation/build/.transforms/35a3fad3a22cbd734c336b63871cd8c1/jetified-annotation.jar
     static void scanJar(JarInput jarInput,File destFile) {
         File file = jarInput.getFile();
@@ -83,10 +86,16 @@ class ScanUtils {
             //public class ARouter$$Root$$app implements IRouterRoot {
             //很明显我们找的就是IRouterRoot的实现类
             interfaces.each { String interfaceName ->
-                if ((IROUTE_ROOT_PACKAGE+IROUTE_ROOT).equals(interfaceName)&&!AutoRegisterTransform.childrenForIRoutRoot.contains(name)) {
-                    AutoRegisterTransform.childrenForIRoutRoot.add(name);
-                }
 
+                if ((IROUTE_ROOT_PACKAGE+IROUTE_ROOT).equals(interfaceName)&&!AutoRegisterTransform.childrenForIRouterRoot.contains(name)) {
+                    AutoRegisterTransform.childrenForIRouterRoot.add(name);
+                }
+                if ((IROUTE_ROOT_PACKAGE+IPROVIDER_ROOT).equals(interfaceName)&&!AutoRegisterTransform.childrenForIProviderGroup.contains(name)) {
+                    AutoRegisterTransform.childrenForIProviderGroup.add(name);
+                }
+                if ((IROUTE_ROOT_PACKAGE+IINTERCEPTOR_ROOT).equals(interfaceName)&&!AutoRegisterTransform.childrenForIInterceptorGroup.contains(name)) {
+                    AutoRegisterTransform.childrenForIInterceptorGroup.add(name);
+                }
             }
         }
     }

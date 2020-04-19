@@ -3,11 +3,15 @@ package com.docwei.arouter_api;
 
 import com.docwei.annotation.RouteMeta;
 import com.docwei.arouter_api.data.IProvider;
+import com.docwei.arouter_api.interceptors.IInterceptor;
 import com.docwei.arouter_api.template.IRouterGroup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 //仓库
 public class WareHouse {
@@ -21,11 +25,13 @@ public class WareHouse {
     //public class InterceptorHandlerImpl implements IInterceptorHandler
     //String是：com.docwei.arouter_api.interceptors.IInterceptorHandler
     public static Map<String, RouteMeta> sProviders = new HashMap<>();
-
-
     //InterceptorHandlerImpl.class 对应其实例对象
     public static Map<Class, IProvider> sProviderObjects = new HashMap<>();
 
+
+    //Integer就是优先级
+    public static TreeMap<Integer, Class<? extends IInterceptor>> sInterceptors = new TreeMap<>();
+    public static Set<IInterceptor> sInterceptorObjects = new HashSet<>();
 
 
 }

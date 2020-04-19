@@ -8,7 +8,9 @@ import org.apache.commons.io.FileUtils
 
 
 class AutoRegisterTransform extends Transform {
-    static ArrayList<String> childrenForIRoutRoot=new ArrayList<>();
+    static ArrayList<String> childrenForIRouterRoot =new ArrayList<>();
+    static ArrayList<String> childrenForIProviderGroup =new ArrayList<>();
+    static ArrayList<String> childrenForIInterceptorGroup =new ArrayList<>();
    public  static File logisticsCenterFile;
 
     @Override
@@ -44,7 +46,7 @@ class AutoRegisterTransform extends Transform {
             TransformInput input ->
                 input.getJarInputs().each {
                     JarInput jarInput ->
-                        //远端的jar和本地的jar
+                        //远端的jar和本地的jar 其他的moudle
                         String md5Name = DigestUtils.md5Hex(jarInput.file.getAbsolutePath())
                         String jarName=jarInput.name
                         if(jarName.endsWith(".jar")){
@@ -56,15 +58,9 @@ class AutoRegisterTransform extends Transform {
                         File dest = outputProvider.getContentLocation(
                                 jarName+"_"+md5Name, jarInput.getContentTypes(),
                                 jarInput.getScopes(), Format.JAR)
-
                         //outputProvider.getContentLocation第一个参数是要传唯一的key 跟指定路径真没关系
-                        //还是用md5吧
-                       Logger.e("jar-src-->"+jarInput.file.getAbsolutePath())
-
-                       /* File dest = outputProvider.getContentLocation(
-                                jarInput.getFile().getAbsoluteFile().getName(), jarInput.getContentTypes(),
-                                jarInput.getScopes(), Format.JAR)*/
-                            Logger.e("jar-dest-->"+dest.getAbsolutePath())
+                     /*  Logger.e("jar-src-->"+jarInput.file.getAbsolutePath())
+                            Logger.e("jar-dest-->"+dest.getAbsolutePath())*/
                         //在jar包里面怎么扫描文件，依次遍历JarInput：xxx.jar
                         //对于类名确定的，遍历进去里面对比
                         //类名不确定的，则是用ASM对比类头看看其接口是不是IROUTERoot
@@ -99,9 +95,9 @@ class AutoRegisterTransform extends Transform {
         //第二步：修改LogisticsCenter类，并重新封装好LogisticsCenter类所在的jar包
         //logisticsCenterFile 是一个JarInput（xxx.jar）
         if(logisticsCenterFile!=null ){
-             if(!childrenForIRoutRoot.isEmpty()){
+             if(!childrenForIRouterRoot.isEmpty()){
                  //可以注入代码了
-                 InsertCodeUtil.insert(logisticsCenterFile,childrenForIRoutRoot)
+                 InsertCodeUtil.insert(logisticsCenterFile,childrenForIRouterRoot)
              }
         }
 

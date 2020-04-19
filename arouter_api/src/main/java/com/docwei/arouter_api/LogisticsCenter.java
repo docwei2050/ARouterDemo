@@ -9,8 +9,9 @@ import android.util.Log;
 import com.docwei.annotation.BizType;
 import com.docwei.annotation.RouteMeta;
 import com.docwei.arouter_api.data.IProvider;
+import com.docwei.arouter_api.template.IInterceptorGroup;
+import com.docwei.arouter_api.template.IProviderGroup;
 import com.docwei.arouter_api.template.IRouterGroup;
-import com.docwei.arouter_api.template.IRouterProvider;
 import com.docwei.arouter_api.template.IRouterRoot;
 import com.docwei.compiler.Consts;
 
@@ -23,6 +24,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import dalvik.system.DexFile;
 
+import static com.docwei.compiler.Consts.NAME_OF_INTERCEPTOR;
 import static com.docwei.compiler.Consts.NAME_OF_PROVIDER;
 import static com.docwei.compiler.Consts.NAME_OF_ROOT;
 
@@ -78,11 +80,11 @@ public class LogisticsCenter {
         //方式一；耗时的从base.apk（dexFile）去找IRouteRoot的子类全路径 ,这里就耗时1s左右
         //优化的方式，使用auto-register
         //方式二：loadRouteMap()
-     /*   loadRouteMap();
+        loadRouteMap();
        if(sAutoRegister){
            Log.e("myArouter", "init: 走auto-register" );
            return;
-       }*/
+       }
         final Set<String> fileNames = new HashSet<>();
         ApplicationInfo applicationInfo = context.getApplicationInfo();
         //获取app的apk的路径
@@ -112,7 +114,10 @@ public class LogisticsCenter {
                     ((IRouterRoot) (Class.forName(fileName).getConstructor().newInstance())).loadInto(WareHouse.sGroups);
                 }
                 if (fileName.startsWith(Consts.PACKAGE_OF_GENERATE_FILE + "." + NAME_OF_PROVIDER)) {
-                    ((IRouterProvider) (Class.forName(fileName).getConstructor().newInstance())).loadInto(WareHouse.sProviders);
+                    ((IProviderGroup) (Class.forName(fileName).getConstructor().newInstance())).loadInto(WareHouse.sProviders);
+                }
+                if (fileName.startsWith(Consts.PACKAGE_OF_GENERATE_FILE + "." + NAME_OF_INTERCEPTOR)) {
+                    ((IInterceptorGroup) (Class.forName(fileName).getConstructor().newInstance())).loadInto(WareHouse.sInterceptors);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -154,7 +159,7 @@ public class LogisticsCenter {
 
         } else {
             postCard.destination = routeMeta.destination;
-            postCard.type=routeMeta.getType();
+            postCard.type = routeMeta.getType();
             //获取对象实例
             if (postCard.getType() == BizType.IPROVIDER) {
                 IProvider iProvider = WareHouse.sProviderObjects.get(postCard.destination);

@@ -1,25 +1,19 @@
 package com.docwei.arouter
 
-import com.android.build.api.transform.JarInput
-
 import org.apache.commons.io.IOUtils
-import org.objectweb.asm.ClassReader
-import org.objectweb.asm.ClassVisitor
-import org.objectweb.asm.ClassWriter
-import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Opcodes
+import org.objectweb.asm.*
 
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
-import java.util.zip.ZipEntry;
+import java.util.zip.ZipEntry
 
 class InsertCodeUtil {
     static String LOAD_ROUTE_MAP = "loadRouteMap";
 
     static void insert(File rawFile, ArrayList<String> list) {
         //未被修改的文件
-        Logger.e("rawFile后缀---》"+rawFile.getParent()+rawFile.getName())
+        Logger.e("rawFile后缀---》" + rawFile.getParent() + rawFile.getName())
         //新建一个空的jar.opt文件
         File optFile = new File(rawFile.getParent(), rawFile.getName() + ".opt")
         if (optFile.exists()) {
@@ -39,12 +33,11 @@ class InsertCodeUtil {
             //放入一个空的zipEntry
             jarOutputStream.putNextEntry(zipEntry)
             if (ScanUtils.LOGISTICS_CENTER == entryName) {
-                Logger.e("开始准备插入代码到方法"+entryName)
+                Logger.e("开始准备插入代码到方法" + entryName)
                 /*  public static void loadRouteMap() {
                 sAutoRegister = false;
                 //这个方法将被ASM修改，添加对应的代码 ,尽量不要给ASM要修改的方法添加麻烦
                 //register("com.docwei.arouter.routes.ARouter$$Root$$app);
-
                 }*/
                 byte[] bytes = actuallyInsertCode(inputStream)
                 jarOutputStream.write(bytes);
@@ -58,7 +51,7 @@ class InsertCodeUtil {
         jarOutputStream.close()
         rawJarFile.close()
         //todo 不删除旧的，就一直会用旧的啊
-        if(rawFile.exists()){
+        if (rawFile.exists()) {
             rawFile.delete()
         }
         //最后改成之前一样的文件名
@@ -111,17 +104,31 @@ class InsertCodeUtil {
         @Override
         void visitInsn(int opcode) {
             if (opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN) {
-                AutoRegisterTransform.childrenForIRoutRoot.each {
-                    String name=it.replaceAll("/",".")
+                AutoRegisterTransform.childrenForIRouterRoot.each {
+                    String name = it.replaceAll("/", ".")
                     mv.visitLdcInsn(name);
                     mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/docwei/arouter_api/LogisticsCenter",
                             "register", "(Ljava/lang/String;)V", false);
-                    Logger.e("插入代码--"+name)
+                }
+                AutoRegisterTransform.childrenForIProviderGroup.each {
+                    String name = it.replaceAll("/", ".")
+                    mv.visitLdcInsn(name);
+                    mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/docwei/arouter_api/LogisticsCenter",
+                            "register", "(Ljava/lang/String;)V", false);
+                    Logger.e("插入代码--" + name)
 
-               }
+                }
+                AutoRegisterTransform.childrenForIInterceptorGroup.each {
+                    String name = it.replaceAll("/", ".")
+                    mv.visitLdcInsn(name);
+                    mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/docwei/arouter_api/LogisticsCenter",
+                            "register", "(Ljava/lang/String;)V", false);
+                    Logger.e("插入代码--" + name)
+                }
             }
             super.visitInsn(opcode)
         }
+
         @Override
         void visitMaxs(int maxStack, int maxLocals) {
             super.visitMaxs(maxStack + 4, maxLocals)

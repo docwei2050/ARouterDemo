@@ -16,7 +16,7 @@ class PluginLaunch implements Plugin<Project> {
             def extension=project.extensions.getByType(AppExtension)
             extension.registerTransform(new AutoRegisterTransform())
           //做两件事情
-            //1.遍历jarFile和Directory去找IRouterRoot的子类并且保存起来
+            //1.遍历jarFile和Directory去找IRouterRoot IProviderGroup IInterceptorGroup的子类并且保存起来
             //2.去找Logistices这个类，并且在其方法里面插入register("IRouterRoot子类全路径")的代码
 
             //初始化日志

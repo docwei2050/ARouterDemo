@@ -250,7 +250,7 @@ public class ArouterProcessor extends AbstractProcessor {
             }
         }
         if (providerRoutes.size() > 0) {
-            TypeElement irouteProvider = mElments.getTypeElement("com.docwei.arouter_api.template.IRouterProvider");
+            TypeElement irouteProvider = mElments.getTypeElement("com.docwei.arouter_api.template.IProviderGroup");
 
             //创建文件
             String providerCn = NAME_OF_PROVIDER + SEPARATOR + mModuleName;
