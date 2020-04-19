@@ -1,6 +1,7 @@
 package com.docwei.arouterdemo.interceptors;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.docwei.annotation.Interceptor;
@@ -15,8 +16,8 @@ public class MyInterceptor implements IInterceptor {
 
     @Override
     public void process(PostCard postCard, IInterceptorCallback iInterceptorCallback) {
-        Toast.makeText(mContext,"我是MyInterceptor，我不拦截你的跳转",Toast.LENGTH_SHORT).show();
-        iInterceptorCallback.continu(postCard);
+        //不拦截
+        iInterceptorCallback.continuing(postCard);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.docwei.compiler;
 
 import com.docwei.annotation.BizType;
+import com.docwei.annotation.Interceptor;
 import com.docwei.annotation.Route;
 import com.docwei.annotation.RouteMeta;
 import com.squareup.javapoet.ClassName;
@@ -12,7 +13,6 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.WildcardTypeName;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,12 +36,13 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import static com.docwei.compiler.Consts.NAME_OF_GROUP;
+import static com.docwei.compiler.Consts.NAME_OF_INTERCEPTOR;
 import static com.docwei.compiler.Consts.NAME_OF_PROVIDER;
 import static com.docwei.compiler.Consts.NAME_OF_ROOT;
 import static com.docwei.compiler.Consts.PACKAGE_OF_GENERATE_FILE;
 import static com.docwei.compiler.Consts.SEPARATOR;
 
-@SupportedAnnotationTypes("com.docwei.annotation.Route")
+@SupportedAnnotationTypes({"com.docwei.annotation.Route", "com.docwei.annotation.Interceptor"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedOptions("AROUTER_MODULE_NAME")
 public class ArouterProcessor extends AbstractProcessor {
@@ -56,6 +57,8 @@ public class ArouterProcessor extends AbstractProcessor {
     private Map<String, Set<RouteMeta>> allRoutes = new HashMap<>();
     //provider用的
     private Set<RouteMeta> providerRoutes = new HashSet<>();
+    //拦截器用
+    public Map<Integer, TypeElement> mInterceptors = new HashMap<>();
     private String mModuleName;
 
     @Override
@@ -118,7 +121,17 @@ public class ArouterProcessor extends AbstractProcessor {
                 }
                 sets.add(routeMeta);
 
+
             }
+        }
+        Set<? extends Element> elementInterceptors = roundEnv.getElementsAnnotatedWith(Interceptor.class);
+        for (Element element : elementInterceptors) {
+            if (!(element instanceof TypeElement)) {
+                mLogger.e("Route只能注解到类上 interceptor");
+                return false;
+            }
+            Interceptor interceptor = element.getAnnotation(Interceptor.class);
+            mInterceptors.put(interceptor.priority(), (TypeElement) element);
         }
         createFile();
         return false;
@@ -261,6 +274,42 @@ public class ArouterProcessor extends AbstractProcessor {
                         .build().writeTo(mFiler);
 
             } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        //创建拦截器的新类
+
+        //Map<Integer, Class<? extends IInterceptor>
+        TypeElement iInterceptor = mElments.getTypeElement("com.docwei.arouter_api.interceptors.IInterceptor");
+        ParameterizedTypeName parameterizedType = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(Integer.class),
+                ParameterizedTypeName.get(ClassName.get(Class.class), WildcardTypeName.subtypeOf(ClassName.get(iInterceptor))));
+
+
+        ParameterSpec parameterSpec = ParameterSpec.builder(parameterizedType, "wareHouse").build();
+        MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("loadInto")
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(parameterSpec);
+
+        for (Map.Entry<Integer, TypeElement> entry : mInterceptors.entrySet()) {
+            Integer integer = entry.getKey();
+            TypeElement element = entry.getValue();
+            methodSpecBuilder.addStatement("wareHouse.put(" + integer + ", $T.class)", ClassName.get(element));
+
+        }
+        mLogger.d("开始创建Interceptor");
+        if (mInterceptors.size() > 0) {
+            TypeElement superElement = mElments.getTypeElement("com.docwei.arouter_api.template.IInterceptorGroup");
+            String className = NAME_OF_INTERCEPTOR + SEPARATOR + mModuleName;
+            try {
+                JavaFile.builder(PACKAGE_OF_GENERATE_FILE,
+                        TypeSpec.classBuilder(className).addSuperinterface(ClassName.get(superElement))
+                                .addModifiers(Modifier.PUBLIC).addMethod(methodSpecBuilder.build()).build())
+                        .build().writeTo(mFiler);
+                mLogger.d("创建Interceptor文件");
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

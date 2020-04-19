@@ -34,7 +34,7 @@ import static com.docwei.compiler.Consts.NAME_OF_ROOT;
 //当然也可以使用autoRegister在编译器去做
 public class LogisticsCenter {
     static boolean sAutoRegister;
-
+    static Context sContext;
     public static void loadRouteMap() {
         sAutoRegister = false;
         //这个方法将被ASM修改，添加对应的代码 ,尽量不要给ASM要修改的方法添加麻烦
@@ -44,30 +44,30 @@ public class LogisticsCenter {
     }
 
     public static void register(String name) {
-        Log.e("myArouter", "register方法的方法--》" + name);
         if (!TextUtils.isEmpty(name)) {
             try {
                 Object obj = Class.forName(name).getConstructor().newInstance();
                 if (obj instanceof IRouterRoot) {
                     ((IRouterRoot) obj).loadInto(WareHouse.sGroups);
                 }
-                Log.e("myArouter", "register方法--》" + name);
+                if (obj instanceof IProviderGroup) {
+                    ((IProviderGroup) (Class.forName(name).getConstructor().newInstance())).loadInto(WareHouse.sProviders);
+                }
+                if (obj instanceof IInterceptorGroup) {
+                    ((IInterceptorGroup) (Class.forName(name).getConstructor().newInstance())).loadInto(WareHouse.sInterceptors);
+                }
                 sAutoRegister = true;
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
-                Log.e("myArouter", "registerIllegalAccessException--》" + e.getMessage());
             } catch (InstantiationException e) {
                 e.printStackTrace();
-                Log.e("myArouter", "registerInstantiationException--》" + e.getMessage());
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
-                Log.e("myArouter", "registerInvocationTargetException --》" + e.getMessage());
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
-                Log.e("myArouter", "registerNoSuchMethodException--》" + e.getMessage());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                Log.e("myArouter", "registerClassNotFoundException--》" + e.getMessage());
+
             }
 
 
@@ -76,7 +76,7 @@ public class LogisticsCenter {
 
 
     public static void init(Context context, ThreadPoolExecutor executor) {
-
+        sContext=context;
         //方式一；耗时的从base.apk（dexFile）去找IRouteRoot的子类全路径 ,这里就耗时1s左右
         //优化的方式，使用auto-register
         //方式二：loadRouteMap()
@@ -167,6 +167,9 @@ public class LogisticsCenter {
                     try {
                         iProvider = (IProvider) postCard.getDestination().getConstructor().newInstance();
                         postCard.setProvider(iProvider);
+                        //sContext是最大的上下文
+                        Log.e("arouter", "completePostCard:sContext拦截器 "+postCard.getDestination());
+                        iProvider.init(sContext);
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     } catch (InstantiationException e) {

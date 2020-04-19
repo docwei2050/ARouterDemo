@@ -32,6 +32,10 @@ import static com.docwei.compiler.Consts.NAME_OF_INTERCEPTOR;
 import static com.docwei.compiler.Consts.PACKAGE_OF_GENERATE_FILE;
 import static com.docwei.compiler.Consts.SEPARATOR;
 
+//这个类没用到，以为手动注册只能指定一个注解处理器
+//自动注册autoservice 貌似不兼容
+
+
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedOptions("AROUTER_MODULE_NAME")
 @SupportedAnnotationTypes("com.docwei.annotation.Interceptor")
@@ -42,7 +46,7 @@ public class InterceptorProcessor extends AbstractProcessor {
     private Map<String, String> mOptions;
     private Elements mElments;
     private Logger mLogger;
-    public Map<Integer, TypeElement> mIntegerClassMap = new HashMap<>();
+    public Map<Integer, TypeElement> mInterceptors = new HashMap<>();
     private String mModuleName;
 
     @Override
@@ -61,8 +65,6 @@ public class InterceptorProcessor extends AbstractProcessor {
         //目的是生成含有
         if (!annotations.isEmpty()) {
             mModuleName = mOptions.get("AROUTER_MODULE_NAME");
-
-
             Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Interceptor.class);
             for (Element element : elements) {
                 if (element instanceof TypeElement) {
@@ -70,7 +72,7 @@ public class InterceptorProcessor extends AbstractProcessor {
                     return false;
                 }
                 Interceptor interceptor = element.getAnnotation(Interceptor.class);
-                mIntegerClassMap.put(interceptor.priority(), (TypeElement) element);
+                mInterceptors.put(interceptor.priority(), (TypeElement) element);
             }
             createFile();
         }
@@ -96,14 +98,14 @@ public class InterceptorProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(parameterSpec);
 
-        for (Map.Entry<Integer, TypeElement> entry : mIntegerClassMap.entrySet()) {
+        for (Map.Entry<Integer, TypeElement> entry : mInterceptors.entrySet()) {
              Integer integer=entry.getKey();
              TypeElement element=entry.getValue();
              methodSpecBuilder.addStatement("wareHouse.put("+integer+", $T.class)",ClassName.get(element));
 
         }
         mLogger.d("开始创建Interceptor");
-        if(mIntegerClassMap.size()>0){
+        if(mInterceptors.size()>0){
             TypeElement superElement=mElments.getTypeElement("com.docwei.arouter_api.template.IInterceptorGroup");
             String className=NAME_OF_INTERCEPTOR+SEPARATOR+mModuleName;
             try {

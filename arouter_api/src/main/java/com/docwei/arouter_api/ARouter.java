@@ -2,6 +2,8 @@ package com.docwei.arouter_api;
 
 import android.content.Context;
 
+import com.docwei.arouter_api.interceptors.InterceptorHandlerImpl;
+
 //采用外观模式
 public class ARouter {
     private volatile static  ARouter sInstance;
@@ -25,11 +27,9 @@ public class ARouter {
         //再在页面跳转的时候把组内的映射关系加入WareHouse
     }
 
-
     public PostCard build(String path){
         return _ARouter.getInstance().build(path);
     }
-
 
     public Object navigation(Class service){
         return  _ARouter.getInstance().navgation(service);

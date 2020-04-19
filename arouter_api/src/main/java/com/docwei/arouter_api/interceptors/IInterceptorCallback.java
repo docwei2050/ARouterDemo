@@ -4,7 +4,7 @@ import com.docwei.arouter_api.PostCard;
 
 public interface IInterceptorCallback {
 
-    void continu(PostCard postCard);
+    void continuing(PostCard postCard);
 
     void interrupted(Throwable throwable);
 }

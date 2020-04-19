@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.docwei.arouter_api.ARouter;
+import com.docwei.arouter_api.PostCard;
+import com.docwei.arouter_api.interceptors.NavgationCallback;
 import com.docwei.arouterdemo.createobject.HelloServiceImpl;
 import com.docwei.arouterdemo.createobject.IHelloService;
 
@@ -24,7 +27,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickMe2Third(View view) {
-        ARouter.getInstance().build("/test/third").navgation(this);
+        ARouter.getInstance().build("/test/third").navgation(this, new NavgationCallback() {
+            @Override
+            public void arrival(PostCard postCard) {
+                Toast.makeText(MainActivity.this,"跳转到了指定页面",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void interrupted(PostCard postCard) {
+                Toast.makeText(MainActivity.this,postCard.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void clickMe2TestModule(View view) {

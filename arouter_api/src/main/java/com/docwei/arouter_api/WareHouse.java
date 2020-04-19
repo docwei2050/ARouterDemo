@@ -29,9 +29,9 @@ public class WareHouse {
     public static Map<Class, IProvider> sProviderObjects = new HashMap<>();
 
 
-    //Integer就是优先级
+    //Integer就是优先级  treeMap按照key自然排序 源码此处重写了
     public static TreeMap<Integer, Class<? extends IInterceptor>> sInterceptors = new TreeMap<>();
-    public static Set<IInterceptor> sInterceptorObjects = new HashSet<>();
+    public static ArrayList<IInterceptor> sInterceptorObjects = new ArrayList<>();
 
 
 }
