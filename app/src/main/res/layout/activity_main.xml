@@ -8,52 +8,69 @@
     tools:context=".MainActivity">
 
 
-    <TextView
+    <Button
         android:id="@+id/tv1"
-        android:layout_width="match_parent"
-        android:gravity="center"
-        android:layout_height="100dp"
+        android:background="#F2BD6E"
         android:onClick="clickMe2Second"
-        android:text="clickMe2Second"
-        android:textColor="@android:color/white"
-        android:textSize="30sp"
-        android:background="#81E6F1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.367"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.187" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="#B8EABA"
-        android:gravity="center"
-        android:onClick="clickMe2Third"
-        android:text="clickMe2Third"
-        android:textColor="@android:color/white"
-        android:textSize="30sp"
+        android:text="clickMe2Second(跳页面)"
+        style="@style/text_style"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv1"
-        app:layout_constraintVertical_bias="0.159" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.004" />
 
-    <TextView
+    <Button
+        android:id="@+id/textView2"
+        android:background="#F2BD6E"
+        android:onClick="clickMe2Third"
+        android:text="clickMe2Third(跳页面)"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv1"
+        app:layout_constraintVertical_bias="0.0"
+        style="@style/text_style" />
+
+    <Button
         android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:gravity="center"
-        android:textSize="30sp"
-        android:textColor="@android:color/white"
-        android:background="#F2C178"
+        android:background="#F2BD6E"
+        style="@style/text_style"
         android:onClick="clickMe2TestModule"
-        android:text="clickMe2TestModule"
+        android:text="clickMe2TestModule(跳其他module页面)"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        style="@style/text_style"
+        android:id="@+id/textView"
+        android:background="#EF6493"
+        android:layout_marginTop="10dp"
+        android:onClick="createObjectByPath"
+        android:text="createObjectByPath(获取实例)"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        style="@style/text_style"
+        android:id="@+id/textView4"
+        android:background="#EF6493"
+        android:onClick="createObjectByType"
+        android:text="createObjectByType(获取实例)"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

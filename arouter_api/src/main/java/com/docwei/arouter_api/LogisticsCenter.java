@@ -6,8 +6,11 @@ import android.content.pm.ApplicationInfo;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.docwei.annotation.BizType;
 import com.docwei.annotation.RouteMeta;
+import com.docwei.arouter_api.data.IProvider;
 import com.docwei.arouter_api.template.IRouterGroup;
+import com.docwei.arouter_api.template.IRouterProvider;
 import com.docwei.arouter_api.template.IRouterRoot;
 import com.docwei.compiler.Consts;
 
@@ -20,6 +23,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import dalvik.system.DexFile;
 
+import static com.docwei.compiler.Consts.NAME_OF_PROVIDER;
 import static com.docwei.compiler.Consts.NAME_OF_ROOT;
 
 
@@ -38,30 +42,30 @@ public class LogisticsCenter {
     }
 
     public static void register(String name) {
-        Log.e("myArouter", "register方法的方法--》"+name );
+        Log.e("myArouter", "register方法的方法--》" + name);
         if (!TextUtils.isEmpty(name)) {
             try {
                 Object obj = Class.forName(name).getConstructor().newInstance();
                 if (obj instanceof IRouterRoot) {
                     ((IRouterRoot) obj).loadInto(WareHouse.sGroups);
                 }
-                Log.e("myArouter", "register方法--》"+name );
+                Log.e("myArouter", "register方法--》" + name);
                 sAutoRegister = true;
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
-                Log.e("myArouter", "registerIllegalAccessException--》"+e.getMessage() );
+                Log.e("myArouter", "registerIllegalAccessException--》" + e.getMessage());
             } catch (InstantiationException e) {
                 e.printStackTrace();
-                Log.e("myArouter", "registerInstantiationException--》"+e.getMessage() );
+                Log.e("myArouter", "registerInstantiationException--》" + e.getMessage());
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
-                Log.e("myArouter", "registerInvocationTargetException --》"+e.getMessage() );
+                Log.e("myArouter", "registerInvocationTargetException --》" + e.getMessage());
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
-                Log.e("myArouter", "registerNoSuchMethodException--》"+e.getMessage() );
+                Log.e("myArouter", "registerNoSuchMethodException--》" + e.getMessage());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                Log.e("myArouter", "registerClassNotFoundException--》"+e.getMessage() );
+                Log.e("myArouter", "registerClassNotFoundException--》" + e.getMessage());
             }
 
 
@@ -74,11 +78,11 @@ public class LogisticsCenter {
         //方式一；耗时的从base.apk（dexFile）去找IRouteRoot的子类全路径 ,这里就耗时1s左右
         //优化的方式，使用auto-register
         //方式二：loadRouteMap()
-        loadRouteMap();
+     /*   loadRouteMap();
        if(sAutoRegister){
            Log.e("myArouter", "init: 走auto-register" );
            return;
-       }
+       }*/
         final Set<String> fileNames = new HashSet<>();
         ApplicationInfo applicationInfo = context.getApplicationInfo();
         //获取app的apk的路径
@@ -102,35 +106,31 @@ public class LogisticsCenter {
 
 
         for (String fileName : fileNames) {
-
-            if (fileName.startsWith(Consts.PACKAGE_OF_GENERATE_FILE + "." + NAME_OF_ROOT)) {
-                //反射去创建这个类对象，然后保存到仓库
-                try {
-                    Log.e("myRouter", "反射创建init: " + fileName);
+            //反射去创建这个类对象，然后保存到仓库
+            try {
+                if (fileName.startsWith(Consts.PACKAGE_OF_GENERATE_FILE + "." + NAME_OF_ROOT)) {
                     ((IRouterRoot) (Class.forName(fileName).getConstructor().newInstance())).loadInto(WareHouse.sGroups);
-                   /* IRouterRoot iRouterRoot = (IRouterRoot)(Class.forName(fileName).getConstructor().newInstance());
-                    iRouterRoot.loadInto(WareHouse.sGroups);*/
-                    Log.e("myRouter", "反射创建init:WareHouse.sGroups.size() " + WareHouse.sGroups.size());
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
                 }
+                if (fileName.startsWith(Consts.PACKAGE_OF_GENERATE_FILE + "." + NAME_OF_PROVIDER)) {
+                    ((IRouterProvider) (Class.forName(fileName).getConstructor().newInstance())).loadInto(WareHouse.sProviders);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
-
-
     }
+
 
     public static void completePostCard(PostCard postCard) {
         RouteMeta routeMeta = WareHouse.sRoutes.get(postCard.getPath());
-        Log.e("myRouter", "completePostCard: " + WareHouse.sGroups.size() + "---" + postCard.getGroup());
         if (routeMeta == null) {
             Class<? extends IRouterGroup> iRouterGroup = WareHouse.sGroups.get(postCard.getGroup());
             if (iRouterGroup == null) {
@@ -142,7 +142,6 @@ public class LogisticsCenter {
                 routerGroup.loadInto(WareHouse.sRoutes);
                 //这种类似递归的搞法可以
                 completePostCard(postCard);
-
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InstantiationException e) {
@@ -155,6 +154,26 @@ public class LogisticsCenter {
 
         } else {
             postCard.destination = routeMeta.destination;
+            postCard.type=routeMeta.getType();
+            //获取对象实例
+            if (postCard.getType() == BizType.IPROVIDER) {
+                IProvider iProvider = WareHouse.sProviderObjects.get(postCard.destination);
+                if (iProvider == null) {
+                    try {
+                        iProvider = (IProvider) postCard.getDestination().getConstructor().newInstance();
+                        postCard.setProvider(iProvider);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
+
 }

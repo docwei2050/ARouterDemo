@@ -5,7 +5,6 @@ import com.android.build.gradle.internal.pipeline.TransformManager
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils
 
-import java.util.jar.JarFile
 
 
 class AutoRegisterTransform extends Transform {
@@ -69,7 +68,7 @@ class AutoRegisterTransform extends Transform {
                         //在jar包里面怎么扫描文件，依次遍历JarInput：xxx.jar
                         //对于类名确定的，遍历进去里面对比
                         //类名不确定的，则是用ASM对比类头看看其接口是不是IROUTERoot
-                        ScanUtil.scanJar(jarInput,dest)
+                       ScanUtils.scanJar(jarInput,dest)
                         //注意导包的问题
                         FileUtils.copyFile(jarInput.getFile(), dest)
                 }
@@ -82,10 +81,10 @@ class AutoRegisterTransform extends Transform {
                             //ThirdActivity.class
                             //MyApplication.class
                             //SecondActivity.class
-                            if (it.getName().startsWith(ScanUtil.IROUTE_ROOT_CHILD_NAME_PREFIX)) {
+                            if (it.getName().startsWith(ScanUtils.IROUTE_ROOT_CHILD_NAME_PREFIX)) {
                                 //针对IROUTE_ROOT的子类，需要使用ASM去判断
                                 //todo LogisticesCenter.class不可能在DirectoryInput
-                                ScanUtil.scanClass(new FileInputStream(it));
+                               ScanUtils.scanClass(new FileInputStream(it));
                             }
                         }
                         File dest = outputProvider.getContentLocation(

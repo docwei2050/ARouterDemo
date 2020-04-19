@@ -1,5 +1,4 @@
-package com.docwei.arouter;
-
+package com.docwei.arouter
 import com.android.build.api.transform.JarInput
 
 import org.objectweb.asm.ClassReader
@@ -15,7 +14,7 @@ import java.util.jar.JarFile;
 // 确定的类直接比对  不确定的类借助ASM去比对类头上的接口名
 //2.从DirectoryInput的每一个File中去比对这两个东西
 
-class ScanUtil {
+class ScanUtils {
     static String IROUTE_ROOT = "IRouterRoot";
     static String IROUTE_ROOT_PACKAGE = "com/docwei/arouter_api/template/";
     static String LOGISTICS_CENTER_PACKAGE="com/docwei/arouter_api/LogisticsCenter"

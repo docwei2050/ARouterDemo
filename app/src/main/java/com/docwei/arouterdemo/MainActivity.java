@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.docwei.arouter_api.ARouter;
+import com.docwei.arouterdemo.createobject.HelloServiceImpl;
+import com.docwei.arouterdemo.createobject.IHelloService;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -27,5 +29,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickMe2TestModule(View view) {
         ARouter.getInstance().build("/testmodule/test").navgation(this);
+    }
+
+    public void createObjectByPath(View view) {
+       HelloServiceImpl helloservice= (HelloServiceImpl) ARouter.getInstance().build("/service/hello").navgation();
+       helloservice.sayHello();
+    }
+
+    public void createObjectByType(View view) {
+        IHelloService helloService= (IHelloService) ARouter.getInstance().navigation(IHelloService.class);
+        helloService.sayHello();
     }
 }

@@ -9,11 +9,28 @@ public class RouteMeta {
     public String Group;
     public Class<?> destination;
     public TypeElement element;
+    //用来判断是IProvider类型还是IRouterRoot
+    public BizType type;
+
+    public BizType getType() {
+        return type;
+    }
+
+    public void setType(BizType type) {
+        this.type = type;
+    }
 
     public RouteMeta(String path, String group, Class<?> destination) {
         this.path = path;
         Group = group;
         this.destination = destination;
+    }
+
+    public RouteMeta(String path, String group, Class<?> destination, BizType type) {
+        this.path = path;
+        Group = group;
+        this.destination = destination;
+        this.type = type;
     }
 
     public RouteMeta(String path, String group) {

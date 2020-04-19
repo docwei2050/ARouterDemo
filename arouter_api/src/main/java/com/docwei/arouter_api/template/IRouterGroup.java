@@ -6,5 +6,5 @@ import com.docwei.arouter_api.PostCard;
 import java.util.Map;
 
 public interface IRouterGroup {
-    void loadInto(Map<String, RouteMeta> atlas) ;
+    void loadInto(Map<String, RouteMeta> wareHouse) ;
 }

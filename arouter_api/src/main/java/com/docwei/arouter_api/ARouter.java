@@ -29,4 +29,9 @@ public class ARouter {
     public PostCard build(String path){
         return _ARouter.getInstance().build(path);
     }
+
+
+    public Object navigation(Class service){
+        return  _ARouter.getInstance().navgation(service);
+    }
 }

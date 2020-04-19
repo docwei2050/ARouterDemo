@@ -38,7 +38,7 @@ class InsertCodeUtil {
             InputStream inputStream = rawJarFile.getInputStream(jarEntry)
             //放入一个空的zipEntry
             jarOutputStream.putNextEntry(zipEntry)
-            if (ScanUtil.LOGISTICS_CENTER == entryName) {
+            if (ScanUtils.LOGISTICS_CENTER == entryName) {
                 Logger.e("开始准备插入代码到方法"+entryName)
                 /*  public static void loadRouteMap() {
                 sAutoRegister = false;
